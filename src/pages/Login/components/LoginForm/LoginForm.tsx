@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Box, Button, FormControl, Typography } from '@mui/material';
 import styles from './styles.module.scss';
@@ -7,6 +7,7 @@ export default function LoginForm() {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>();
+  const navigate = useNavigate();
 
   const handleLoginChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,9 +53,10 @@ export default function LoginForm() {
       const { token } = data;
       if (token) {
         localStorage.setItem('authToken', token);
+        navigate('/');
       }
     }
-  }, [login, password]);
+  }, [login, navigate, password]);
 
   const isFormValid = login.trim() !== '' && password.trim() !== '';
 

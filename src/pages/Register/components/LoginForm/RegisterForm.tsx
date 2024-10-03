@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Box, Button, FormControl, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 
 export default function RegisterForm() {
@@ -8,6 +9,8 @@ export default function RegisterForm() {
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
   const [error, setError] = useState<string | undefined>('');
+
+  const navigate = useNavigate();
 
   const handleLoginChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -65,10 +68,11 @@ export default function RegisterForm() {
         const { token } = data;
         if (token) {
           localStorage.setItem('authToken', token);
+          navigate('/login');
         }
       }
     }
-  }, [login, password, repeatPassword]);
+  }, [login, navigate, password, repeatPassword]);
 
   const isFormValid =
     login.trim() !== '' &&
