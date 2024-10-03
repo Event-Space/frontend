@@ -1,3 +1,21 @@
-.footer{
-    display: block;
+.footer {
+  padding: 10px 0;
+  background: #10107b;
+}
+.footer__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.link {
+  text-decoration: none;
+  color: white;
+}
+.copyright {
+  border-top: 1px solid white;
+  padding: 20px 0px;
+  display: flex;
+  justify-content: end;
+  font-size: 16px;
+  color: white;
 }

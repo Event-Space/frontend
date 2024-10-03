@@ -1,3 +1,35 @@
-.header{
-    display: block;
+.header {
+  padding: 10px 0;
+}
+.locale {
+  display: flex;
+  justify-content: end;
+}
+.headerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  .link {
+    text-decoration: none;
+  }
+  .signUp {
+    background: #7848f4;
+    color: white;
+    padding: 5px 20px;
+    border-radius: 5px;
+    font-size: 16px !important;
+    font-weight: 600;
+  }
+  .signIn {
+    padding: 5px 20px;
+    font-size: 16px !important;
+    font-weight: 600;
+    color: #7848f4;
+  }
 }

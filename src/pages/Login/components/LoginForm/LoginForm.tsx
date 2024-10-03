@@ -4,7 +4,6 @@ import { Box, Button, FormControl, Typography } from '@mui/material';
 import styles from './styles.module.scss';
 
 export default function LoginForm() {
-  // State to track login and password input values
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>();
@@ -13,7 +12,6 @@ export default function LoginForm() {
     setError('');
   }, []);
 
-  // Function to check if inputs are filled
   const isFormValid = login.trim() !== '' && password.trim() !== '';
 
   return (
@@ -24,7 +22,7 @@ export default function LoginForm() {
           type="text"
           placeholder="Enter your login"
           value={login}
-          onChange={(e) => setLogin(e.target.value)} // Update login state
+          onChange={(e) => setLogin(e.target.value)}
         />
       </label>
       <label htmlFor="password" className={styles.inputForm}>
@@ -46,7 +44,7 @@ export default function LoginForm() {
           id="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)} // Update password state
+          onChange={(e) => setPassword(e.target.value)}
         />
       </label>
       <Box className={styles.signIn}>
