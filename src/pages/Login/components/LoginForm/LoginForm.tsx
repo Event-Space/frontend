@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { Box, Button, FormControl, Typography } from '@mui/material';
 import styles from './styles.module.scss';
 
@@ -8,8 +8,24 @@ export default function LoginForm() {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>();
 
-  useEffect(() => {
-    setError('');
+  const handleLoginChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setLogin(e.target.value);
+      if (error) setError('');
+    },
+    [error]
+  );
+
+  const handlePasswordChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setPassword(e.target.value);
+      if (error) setError('');
+    },
+    [error]
+  );
+
+  const onSubmit = useCallback(() => {
+    setError('Username or password is incorrect');
   }, []);
 
   const isFormValid = login.trim() !== '' && password.trim() !== '';
@@ -22,7 +38,8 @@ export default function LoginForm() {
           type="text"
           placeholder="Enter your login"
           value={login}
-          onChange={(e) => setLogin(e.target.value)}
+          onChange={handleLoginChange}
+          style={{ border: error ? '1px solid red' : 'none' }}
         />
       </label>
       <label htmlFor="password" className={styles.inputForm}>
@@ -44,12 +61,17 @@ export default function LoginForm() {
           id="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
+          style={{ border: error ? '1px solid red' : 'none' }}
         />
+        <Typography sx={{ color: 'red' }}>{error}</Typography>
       </label>
       <Box className={styles.signIn}>
-        <Typography>{error}</Typography>
-        <Button className={styles.signInButton} disabled={!isFormValid}>
+        <Button
+          className={styles.signInButton}
+          disabled={!isFormValid}
+          onClick={onSubmit}
+        >
           Sign In
         </Button>
       </Box>

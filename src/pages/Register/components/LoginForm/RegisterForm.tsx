@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { Box, Button, FormControl, Typography } from '@mui/material';
 import styles from './styles.module.scss';
 
@@ -8,9 +8,37 @@ export default function RegisterForm() {
   const [repeatPassword, setRepeatPassword] = useState<string>('');
   const [error, setError] = useState<string | undefined>('');
 
-  useEffect(() => {
-    setError('');
-  }, []);
+  const handleLoginChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setLogin(e.target.value);
+      if (error) setError('');
+    },
+    [error]
+  );
+
+  const handlePasswordChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setPassword(e.target.value);
+      if (error) setError('');
+    },
+    [error]
+  );
+
+  const handleRePasswordChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setRepeatPassword(e.target.value);
+      if (error) setError('');
+    },
+    [error]
+  );
+
+  const onSubmit = useCallback(() => {
+    if (password.length < 8) {
+      setError('Password length must be at least 8 characters');
+    } else if (password !== repeatPassword) {
+      setError('Password not same');
+    }
+  }, [password, repeatPassword]);
 
   const isFormValid =
     login.trim() !== '' &&
@@ -25,7 +53,10 @@ export default function RegisterForm() {
           type="text"
           placeholder="Enter your login"
           value={login}
-          onChange={(e) => setLogin(e.target.value)}
+          onChange={handleLoginChange}
+          style={{
+            border: error === 'User already exists' ? '1px solid red' : 'none',
+          }}
         />
       </label>
 
@@ -36,7 +67,10 @@ export default function RegisterForm() {
           id="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
+          style={{
+            border: error === 'Password not same' ? '1px solid red' : 'none',
+          }}
         />
       </label>
 
@@ -47,13 +81,17 @@ export default function RegisterForm() {
           id="repeatPassword"
           placeholder="Repeat your password"
           value={repeatPassword}
-          onChange={(e) => setRepeatPassword(e.target.value)}
+          onChange={handleRePasswordChange}
+          style={{ border: error ? '1px solid red' : 'none' }}
         />
       </label>
-
+      <Typography sx={{ color: 'red' }}>{error}</Typography>
       <Box className={styles.signIn}>
-        <Typography>{error}</Typography>
-        <Button className={styles.signInButton} disabled={!isFormValid}>
+        <Button
+          className={styles.signInButton}
+          disabled={!isFormValid}
+          onClick={onSubmit}
+        >
           Sign Up
         </Button>
       </Box>
