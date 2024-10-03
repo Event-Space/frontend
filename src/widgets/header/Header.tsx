@@ -1,11 +1,19 @@
-import { Box, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Logo } from '../../shared/ui';
 import { Locale } from '../../features/i18n';
 
 export default function Header() {
+  const [user, setUser] = useState<boolean>(false);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    if (token) setUser(true);
+  }, [token]);
+
   return (
     <Box component="section">
       <div className="container">
@@ -15,13 +23,19 @@ export default function Header() {
           </Box>
           <Box component="div" className={styles.headerWrapper}>
             <Logo />
+            <Typography>Client Page</Typography>
             <Box className={styles.auth}>
-              <Link to="/login" className={styles.link}>
-                <Typography className={styles.signIn}>Sign In</Typography>
-              </Link>
-              <Link to="/register" className={styles.link}>
-                <Typography className={styles.signUp}>Sign Up</Typography>
-              </Link>
+              {!user && (
+                <>
+                  <Link to="/login" className={styles.link}>
+                    <Typography className={styles.signIn}>Sign In</Typography>
+                  </Link>
+                  <Link to="/register" className={styles.link}>
+                    <Typography className={styles.signUp}>Sign Up</Typography>
+                  </Link>
+                </>
+              )}
+              {user && <Avatar sx={{ bgcolor: 'black' }}>N</Avatar>}
             </Box>
           </Box>
         </Box>

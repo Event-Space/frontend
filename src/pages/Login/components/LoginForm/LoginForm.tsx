@@ -24,9 +24,37 @@ export default function LoginForm() {
     [error]
   );
 
-  const onSubmit = useCallback(() => {
-    setError('Username or password is incorrect');
-  }, []);
+  const onSubmit = useCallback(async () => {
+    const response = await fetch(
+      'https://server.kenuki.org//api/security/login',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: login,
+          password,
+        }),
+      }
+    );
+
+    // eslint-disable-next-line no-console
+    console.log(response);
+    // eslint-disable-next-line no-console
+    console.log('CHECK');
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      setError(errorData.message || 'Username or password is incorrect');
+    } else {
+      const data = await response.json();
+      const { token } = data;
+      if (token) {
+        localStorage.setItem('authToken', token);
+      }
+    }
+  }, [login, password]);
 
   const isFormValid = login.trim() !== '' && password.trim() !== '';
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Box, Button, FormControl, Typography } from '@mui/material';
 import styles from './styles.module.scss';
@@ -32,13 +33,42 @@ export default function RegisterForm() {
     [error]
   );
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (password.length < 8) {
       setError('Password length must be at least 8 characters');
     } else if (password !== repeatPassword) {
       setError('Password not same');
+    } else {
+      const response = await fetch(
+        'https://server.kenuki.org/api/security/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: login,
+            email: login,
+            password,
+          }),
+        }
+      );
+
+      console.log(response);
+      console.log('check');
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'User already exists');
+      } else {
+        const data = await response.json();
+        const { token } = data;
+        if (token) {
+          localStorage.setItem('authToken', token);
+        }
+      }
     }
-  }, [password, repeatPassword]);
+  }, [login, password, repeatPassword]);
 
   const isFormValid =
     login.trim() !== '' &&
