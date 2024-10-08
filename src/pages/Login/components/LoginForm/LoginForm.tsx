@@ -27,7 +27,7 @@ export default function LoginForm() {
 
   const onSubmit = useCallback(async () => {
     const response = await fetch(
-      'https://server.kenuki.org//api/security/login',
+      'https://server.kenuki.org/api/security/login',
       {
         method: 'POST',
         headers: {

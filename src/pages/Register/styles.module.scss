@@ -2,16 +2,6 @@
   display: flex;
   height: 100vh;
 }
-.leftSection {
-  flex: 4;
-  padding: 5% 0;
-  background-color: whitesmoke;
-  display: flex;
-  gap: 80px;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
 .rightSection {
   flex: 2;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -44,4 +34,24 @@
   padding: 10px 35px !important;
   background-color: rgba(255, 255, 255, 0.4) !important;
   color: white !important;
+}
+
+.leftSection {
+  flex: 4;
+  display: flex;
+  background-color: whitesmoke;
+}
+
+.loginInfo {
+  width: 100%;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login__wrapper {
+  display: flex;
+  padding: 10% 0;
+  gap: 100px;
 }
