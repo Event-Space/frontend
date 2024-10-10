@@ -35,6 +35,10 @@ export default function RegisterForm() {
     },
     [error]
   );
+  function generateRandomDigits() {
+    const digits = Math.floor(10000000 + Math.random() * 90000000);
+    return digits.toString();
+  }
 
   const onSubmit = useCallback(async () => {
     if (password.length < 8) {
@@ -50,8 +54,8 @@ export default function RegisterForm() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            phone: '',
-            email: '',
+            phone: `${generateRandomDigits()}`,
+            email: `${login}@gmail.com`,
             username: login,
             firstName: '',
             lastName: '',
@@ -60,10 +64,11 @@ export default function RegisterForm() {
         }
       );
 
-      console.log(response);
-      console.log('check');
       if (response.ok) {
         navigate('/login');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error);
       }
     }
   }, [login, navigate, password, repeatPassword]);
@@ -83,7 +88,11 @@ export default function RegisterForm() {
           value={login}
           onChange={handleLoginChange}
           style={{
-            border: error === 'User already exists' ? '1px solid red' : 'none',
+            border:
+              error === 'Email already exists!' ||
+              error === 'Password length must be at least 8 characters'
+                ? '1px solid red'
+                : 'none',
           }}
         />
       </label>
@@ -110,7 +119,9 @@ export default function RegisterForm() {
           placeholder="Repeat your password"
           value={repeatPassword}
           onChange={handleRePasswordChange}
-          style={{ border: error ? '1px solid red' : 'none' }}
+          style={{
+            border: error === 'Password not same' ? '1px solid red' : 'none',
+          }}
         />
       </label>
       <Typography sx={{ color: 'red' }}>{error}</Typography>
