@@ -43,15 +43,18 @@ export default function RegisterForm() {
       setError('Password not same');
     } else {
       const response = await fetch(
-        'http://server.kenuki.org/api/security/register',
+        'http://kenuki.org:10001/api/auth/register',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            phone: '',
+            email: '',
             username: login,
-            email: login,
+            firstName: '',
+            lastName: '',
             password,
           }),
         }
@@ -59,7 +62,6 @@ export default function RegisterForm() {
 
       console.log(response);
       console.log('check');
-
       if (response.ok) {
         navigate('/login');
       }

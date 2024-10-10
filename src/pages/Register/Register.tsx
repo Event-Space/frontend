@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 
 import { Logo } from '../../shared/ui';
-import RegisterForm from './components/LoginForm/RegisterForm';
+import RegisterForm from './components/RegisterForm/RegisterForm';
 
 export default function Register() {
   const navigate = useNavigate();

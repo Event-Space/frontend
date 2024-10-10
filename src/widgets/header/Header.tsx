@@ -1,18 +1,47 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 
-import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Logo } from '../../shared/ui';
 import { Locale } from '../../features/i18n';
+import { useLogout } from '../../features/logout/Logout';
 
 export default function Header() {
+  const navigate = useNavigate();
+  const logout = useLogout();
+
+  const settings = [
+    { text: 'Profile', action: () => console.log('Profile clicked') },
+    { text: 'Account', action: () => console.log('Account clicked') },
+    { text: 'Dashboard', action: () => navigate('/') },
+    { text: 'Logout', action: logout },
+  ];
+
   const [user, setUser] = useState<boolean>(false);
-  const token = localStorage.getItem('token');
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   useEffect(() => {
-    if (token) setUser(true);
-  }, [token]);
+    if (localStorage.getItem('accessToken')) setUser(true);
+    else setUser(false);
+  }, []);
 
   return (
     <Box component="section">
@@ -22,8 +51,9 @@ export default function Header() {
             <Locale />
           </Box>
           <Box component="div" className={styles.headerWrapper}>
-            <Logo />
-            <Typography>Client Page</Typography>
+            <Box>
+              <Logo />
+            </Box>
             <Box className={styles.auth}>
               {!user && (
                 <>
@@ -35,7 +65,45 @@ export default function Header() {
                   </Link>
                 </>
               )}
-              {user && <Avatar sx={{ bgcolor: 'black' }}>N</Avatar>}
+              {user && (
+                <Box sx={{ flexGrow: 0 }}>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar sx={{ bgcolor: 'black' }}>N</Avatar>
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    {settings.map((setting) => (
+                      <MenuItem
+                        key={setting.text}
+                        onClick={handleCloseUserMenu}
+                      >
+                        <Button
+                          sx={{ textAlign: 'center' }}
+                          onClick={setting.action}
+                        >
+                          {setting.text}
+                        </Button>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
+              )}
             </Box>
           </Box>
         </Box>
