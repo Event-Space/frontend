@@ -23,11 +23,12 @@ export default function Header() {
   const settings = [
     { text: 'Profile', action: () => console.log('Profile clicked') },
     { text: 'Account', action: () => console.log('Account clicked') },
-    { text: 'Dashboard', action: () => navigate('/') },
+    { text: 'Login Page', action: () => navigate('/login') },
     { text: 'Logout', action: logout },
   ];
 
   const [user, setUser] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>('');
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -39,8 +40,10 @@ export default function Header() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem('accessToken')) setUser(true);
-    else setUser(false);
+    if (localStorage.getItem('accessToken')) {
+      setUser(true);
+      setUsername(localStorage.getItem('user') || '');
+    } else setUser(false);
   }, []);
 
   return (
@@ -88,6 +91,9 @@ export default function Header() {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      {username}
+                    </MenuItem>
                     {settings.map((setting) => (
                       <MenuItem
                         key={setting.text}

@@ -26,7 +26,7 @@ export default function LoginForm() {
   );
 
   const onSubmit = useCallback(async () => {
-    const response = await fetch('http://kenuki.org:10001/api/auth/login', {
+    const response = await fetch('https://server.kenuki.org/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,6 +45,7 @@ export default function LoginForm() {
       if (accessToken) {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('user', login);
         navigate('/');
       }
     }

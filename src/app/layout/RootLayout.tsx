@@ -8,7 +8,7 @@ export default function RootLayout() {
     <div className="root-layout">
       <Header />
       {/* <Navigation /> */}
-      <Box component="div" sx={{ marginTop: '150px' }}>
+      <Box component="div">
         <Outlet />
       </Box>
       <Footer />

@@ -6,6 +6,7 @@ export function useLogout() {
   return () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    navigate('/');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 }

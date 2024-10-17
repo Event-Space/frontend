@@ -47,7 +47,7 @@ export default function RegisterForm() {
       setError('Password not same');
     } else {
       const response = await fetch(
-        'http://kenuki.org:10001/api/auth/register',
+        'https://server.kenuki.org/api/auth/register',
         {
           method: 'POST',
           headers: {
