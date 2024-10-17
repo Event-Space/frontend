@@ -15,16 +15,46 @@ import styles from './styles.module.scss';
 import { Logo } from '../../shared/ui';
 import { Locale } from '../../features/i18n';
 import { useLogout } from '../../features/logout/Logout';
+import {
+  HomeIcon,
+  LogoutIcon,
+  NotificationsIcon,
+  OrdersIcon,
+  ProfileIcon,
+  SpacesIcon,
+} from '../../shared/icons';
 
 export default function Header() {
   const navigate = useNavigate();
   const logout = useLogout();
 
   const settings = [
-    { text: 'Profile', action: () => console.log('Profile clicked') },
-    { text: 'Account', action: () => console.log('Account clicked') },
-    { text: 'Login Page', action: () => navigate('/login') },
-    { text: 'Logout', action: logout },
+    {
+      text: 'Home',
+      action: () => navigate('/'),
+      icon: HomeIcon,
+    },
+    {
+      text: 'Orders',
+      action: () => navigate('/orders'),
+      icon: OrdersIcon,
+    },
+    {
+      text: 'Spaces',
+      action: () => navigate('/spaces'),
+      icon: SpacesIcon,
+    },
+    {
+      text: 'Notifications',
+      action: () => navigate('/notifications'),
+      icon: NotificationsIcon,
+    },
+    {
+      text: 'Profile',
+      action: () => navigate('/profile'),
+      icon: ProfileIcon,
+    },
+    { text: 'Logout', action: logout, icon: LogoutIcon },
   ];
 
   const [user, setUser] = useState<boolean>(false);
@@ -100,10 +130,14 @@ export default function Header() {
                         onClick={handleCloseUserMenu}
                       >
                         <Button
-                          sx={{ textAlign: 'center' }}
+                          sx={{
+                            textAlign: 'center',
+                            display: 'flex',
+                            gap: '20px',
+                          }}
                           onClick={setting.action}
                         >
-                          {setting.text}
+                          <img src={setting.icon} alt="icon" /> {setting.text}
                         </Button>
                       </MenuItem>
                     ))}

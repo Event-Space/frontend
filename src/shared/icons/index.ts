@@ -1,3 +1,9 @@
 export { default as Kaz } from './kz.svg';
 export { default as Rus } from './ru.svg';
 export { default as Eng } from './en.svg';
+export { default as HomeIcon } from './home.svg';
+export { default as OrdersIcon } from './orders.svg';
+export { default as NotificationsIcon } from './notifications.svg';
+export { default as ProfileIcon } from './profile.svg';
+export { default as SpacesIcon } from './spaces.svg';
+export { default as LogoutIcon } from './logout.svg';
