@@ -1,8 +1,7 @@
 import { Box } from '@mui/material';
 
 import styles from './styles.module.scss';
-import { BannerHome } from './components/BannerHome';
-import { MakeEventBanner } from './components';
+import { MakeEventBanner, RegisterBanner, BannerHome } from './components';
 
 export default function Home() {
   return (
@@ -13,6 +12,7 @@ export default function Home() {
         </Box>
       </div>
       <MakeEventBanner />
+      <RegisterBanner />
     </Box>
   );
 }

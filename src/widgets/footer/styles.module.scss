@@ -1,5 +1,6 @@
 .footer {
   padding: 10px 0;
+  padding-top: 50px;
   background: #10107b;
 }
 .footer__wrapper {
@@ -12,10 +13,20 @@
   color: white;
 }
 .copyright {
-  border-top: 1px solid white;
   padding: 20px 0px;
   display: flex;
+  gap: 5px;
   justify-content: end;
   font-size: 16px;
+  color: white;
+}
+.buttom {
+  border-top: 1px solid white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav {
   color: white;
 }

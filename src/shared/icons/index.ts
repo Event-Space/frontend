@@ -7,3 +7,6 @@ export { default as NotificationsIcon } from './notifications.svg';
 export { default as ProfileIcon } from './profile.svg';
 export { default as SpacesIcon } from './spaces.svg';
 export { default as LogoutIcon } from './logout.svg';
+export { default as LinkedinIcon } from './linkedin.svg';
+export { default as InstagramIcon } from './instagram.svg';
+export { default as FacebookIcon } from './facebook.svg';
