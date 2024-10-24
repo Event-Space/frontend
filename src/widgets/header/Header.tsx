@@ -49,9 +49,15 @@ export default function Header() {
       icon: OrdersIcon,
     },
     {
-      text: 'Spaces',
-      action: () => navigate('/spaces'),
+      text: 'Events',
+      action: () => navigate('/event'),
       icon: SpacesIcon,
+    },
+    {
+      text: 'Spaces',
+      action: () => navigate('/space'),
+      icon: SpacesIcon,
+      role: ['MANAGER', 'ADMIN'],
     },
     {
       text: 'Notifications',
@@ -93,7 +99,7 @@ export default function Header() {
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar sx={{ bgcolor: 'black' }}>
-                        {user?.firstName?.charAt(0).toUpperCase() || 'U'}
+                        {user?.email.charAt(0).toUpperCase() || 'U'}
                       </Avatar>
                     </IconButton>
                   </Tooltip>
@@ -130,23 +136,51 @@ export default function Header() {
                           textTransform: 'capitalize',
                         }}
                       >
-                        {user?.firstName} {user?.lastName}
+                        {user?.email}
                       </Typography>
                     </MenuItem>
-                    {settings.map((setting) => (
-                      <MenuItem key={setting.text}>
-                        <Button
-                          sx={{
-                            textAlign: 'center',
-                            display: 'flex',
-                            gap: '10px',
-                          }}
-                          onClick={setting.action}
-                        >
-                          <img src={setting.icon} alt="icon" /> {setting.text}
-                        </Button>
-                      </MenuItem>
-                    ))}
+                    {settings.map((setting) => {
+                      if (
+                        setting.role &&
+                        user?.role &&
+                        setting.role.includes(user.role)
+                      ) {
+                        return (
+                          <MenuItem key={setting.text}>
+                            <Button
+                              sx={{
+                                textAlign: 'center',
+                                display: 'flex',
+                                gap: '10px',
+                              }}
+                              onClick={setting.action}
+                            >
+                              <img src={setting.icon} alt="icon" />{' '}
+                              {setting.text}
+                            </Button>
+                          </MenuItem>
+                        );
+                      }
+                      if (!setting.role) {
+                        return (
+                          <MenuItem key={setting.text}>
+                            <Button
+                              sx={{
+                                textAlign: 'center',
+                                display: 'flex',
+                                gap: '10px',
+                              }}
+                              onClick={setting.action}
+                            >
+                              <img src={setting.icon} alt="icon" />{' '}
+                              {setting.text}
+                            </Button>
+                          </MenuItem>
+                        );
+                      }
+                      return null;
+                    })}
+
                     <MenuItem
                       onClick={handleCloseUserMenu}
                       sx={{

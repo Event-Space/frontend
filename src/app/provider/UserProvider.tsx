@@ -15,12 +15,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const fetchUserData = useCallback(async (accessToken: string) => {
     try {
-      const response = await fetch('https://yourapi.com/user', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(
+        'https://server.kenuki.org/api/user/profile',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       if (response.ok) {
         const userData: User = await response.json();
         setUser(userData);

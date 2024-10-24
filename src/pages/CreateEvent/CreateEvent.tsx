@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { SetStateAction, useEffect, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import {
   Input,
   InputLabel,
@@ -12,19 +12,29 @@ import {
 } from '@mui/material';
 import { useUserStore } from '../../app/store/useUserStore';
 import styles from './style.module.scss';
+import { Space } from '../../entities';
 
 export default function CreateEvent() {
   const { isAuthorized } = useUserStore();
   const navigate = useNavigate();
   const [location, setLocation] = useState('');
+  const [spaces, setSpaces] = useState<Space[]>([]);
 
-  const places = [
-    { id: 1, name: 'New York' },
-    { id: 2, name: 'Los Angeles' },
-    { id: 3, name: 'Chicago' },
-    { id: 4, name: 'Houston' },
-    { id: 5, name: 'Phoenix' },
-  ];
+  const places = useCallback(async () => {
+    const response = await fetch('https://zenuki.kz/api/v1/space', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Username or password is incorrect');
+    }
+
+    const data = await response.json();
+    setSpaces(data);
+  }, []);
 
   const handleChange = (event: {
     target: { value: SetStateAction<string> };
@@ -36,12 +46,13 @@ export default function CreateEvent() {
     if (!isAuthorized) {
       navigate('/login');
     }
-  }, [isAuthorized, navigate]);
+    places();
+  }, [isAuthorized, navigate, places]);
 
   return (
     <section className={styles.createEvent}>
       <div className="container">
-        <div className={styles.createEvent__wrapper}>
+        <Box className={styles.createEvent__wrapper}>
           <Typography
             sx={{ fontSize: '36px', fontWeight: '600', textAlign: 'center' }}
           >
@@ -97,11 +108,13 @@ export default function CreateEvent() {
               <MenuItem value="">
                 <em>Choose location</em>
               </MenuItem>
-              {places.map((place) => (
-                <MenuItem key={place.id} value={place.name}>
-                  {place.name}
-                </MenuItem>
-              ))}
+              {spaces.map((place) =>
+                place.name ? (
+                  <MenuItem key={place.id} value={place.name}>
+                    {place.name}
+                  </MenuItem>
+                ) : null
+              )}
             </Select>
           </InputLabel>
 
@@ -161,7 +174,7 @@ export default function CreateEvent() {
           >
             Create Event
           </Button>
-        </div>
+        </Box>
       </div>
     </section>
   );

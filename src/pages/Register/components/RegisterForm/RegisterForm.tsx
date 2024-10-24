@@ -35,10 +35,6 @@ export default function RegisterForm() {
     },
     [error]
   );
-  function generateRandomDigits() {
-    const digits = Math.floor(10000000 + Math.random() * 90000000);
-    return digits.toString();
-  }
 
   const onSubmit = useCallback(async () => {
     if (password.length < 8) {
@@ -54,11 +50,7 @@ export default function RegisterForm() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            phone: `${generateRandomDigits()}`,
-            email: `${login}@gmail.com`,
-            username: login,
-            firstName: '',
-            lastName: '',
+            email: login,
             password,
           }),
         }
