@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { MakeEventBanner, RegisterBanner, BannerHome } from './components';
 import { Space } from '../../entities';
+import InteriorItem from '../../shared/ui/Card/InteriorItem';
 
 export default function Home() {
   const [spaces, setSpaces] = useState<Space[]>([]);
@@ -45,25 +46,7 @@ export default function Home() {
         }}
       >
         {spaces.map((place) =>
-          place.imageUrl ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                border: '1px solid black',
-              }}
-            >
-              <img
-                key={place.id} // Ensure unique key for each image
-                src={`https://zenuki.kz/api/v1/files/${place.imageUrl}`}
-                alt={place.name} // Use a meaningful alt attribute
-                className={styles.spaceImage} // Optionally style the image
-              />
-              <Typography sx={{ fontSize: '16px', color: 'black' }}>
-                {place.name}
-              </Typography>
-            </Box>
-          ) : null
+          place.imageUrl ? <InteriorItem interior={place} /> : null
         )}
       </Box>
       <RegisterBanner />
