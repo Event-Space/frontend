@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
   Avatar,
   Box,
@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 import { Logo } from '../../shared/ui';
 import { Locale } from '../../features/i18n';
+import { useUserStore } from '../../app/store/useUserStore';
 import {
   HomeIcon,
   LogoutIcon,
@@ -21,11 +22,10 @@ import {
   ProfileIcon,
   SpacesIcon,
 } from '../../shared/icons';
-import { UserContext } from '../../app/store/useUserStore';
 
 export default function Header() {
   const navigate = useNavigate();
-  const { user, isAuthorized, logout: contextLogout } = useContext(UserContext);
+  const { user, isAuthorized, logout: contextLogout } = useUserStore();
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -40,52 +40,30 @@ export default function Header() {
   const settings = [
     {
       text: 'Home',
-      action: () => {
-        handleCloseUserMenu();
-        navigate('/');
-      },
-      icon: <HomeIcon />,
+      action: () => navigate('/'),
+      icon: HomeIcon,
     },
     {
       text: 'Orders',
-      action: () => {
-        handleCloseUserMenu();
-        navigate('/orders');
-      },
-      icon: <OrdersIcon />,
+      action: () => navigate('/orders'),
+      icon: OrdersIcon,
     },
     {
       text: 'Spaces',
-      action: () => {
-        handleCloseUserMenu();
-        navigate('/spaces');
-      },
-      icon: <SpacesIcon />,
+      action: () => navigate('/spaces'),
+      icon: SpacesIcon,
     },
     {
       text: 'Notifications',
-      action: () => {
-        handleCloseUserMenu();
-        navigate('/notifications');
-      },
-      icon: <NotificationsIcon />,
+      action: () => navigate('/notifications'),
+      icon: NotificationsIcon,
     },
     {
       text: 'Profile',
-      action: () => {
-        handleCloseUserMenu();
-        navigate('/profile');
-      },
-      icon: <ProfileIcon />,
+      action: () => navigate('/profile'),
+      icon: ProfileIcon,
     },
-    {
-      text: 'Logout',
-      action: () => {
-        handleCloseUserMenu();
-        contextLogout();
-      },
-      icon: <LogoutIcon />,
-    },
+    { text: 'Logout', action: contextLogout, icon: LogoutIcon },
   ];
 
   return (
@@ -100,7 +78,7 @@ export default function Header() {
               <Logo />
             </Box>
             <Box className={styles.auth}>
-              {!isAuthorized ? (
+              {!isAuthorized && (
                 <>
                   <Link to="/login" className={styles.link}>
                     <Typography className={styles.signIn}>Sign In</Typography>
@@ -109,7 +87,8 @@ export default function Header() {
                     <Typography className={styles.signUp}>Sign Up</Typography>
                   </Link>
                 </>
-              ) : (
+              )}
+              {isAuthorized && (
                 <Box sx={{ flexGrow: 0 }}>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -151,7 +130,7 @@ export default function Header() {
                           textTransform: 'capitalize',
                         }}
                       >
-                        {user?.firstName || 'User'} {user?.lastName || ''}
+                        {user?.firstName} {user?.lastName}
                       </Typography>
                     </MenuItem>
                     {settings.map((setting) => (
@@ -164,10 +143,29 @@ export default function Header() {
                           }}
                           onClick={setting.action}
                         >
-                          {setting.icon} {setting.text}
+                          <img src={setting.icon} alt="icon" /> {setting.text}
                         </Button>
                       </MenuItem>
                     ))}
+                    <MenuItem
+                      onClick={handleCloseUserMenu}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderTop: '1px solid gray',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: '14px',
+                          fontWeight: '400',
+                          color: '#1976d2',
+                        }}
+                      >
+                        {user?.role}
+                      </Typography>
+                    </MenuItem>
                   </Menu>
                 </Box>
               )}

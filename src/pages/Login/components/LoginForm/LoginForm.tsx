@@ -15,7 +15,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-  const { login: userLogin } = useUserStore(); // Из UserContext
+  const { login: userLogin } = useUserStore();
   const navigate = useNavigate();
 
   const handleLoginChange = useCallback(
@@ -42,7 +42,6 @@ export default function LoginForm() {
 
     setLoading(true);
     try {
-      // Отправляем запрос на логин
       const response = await fetch('https://server.kenuki.org/api/auth/login', {
         method: 'POST',
         headers: {
@@ -58,14 +57,12 @@ export default function LoginForm() {
         throw new Error('Username or password is incorrect');
       }
 
-      // Получаем токены из ответа
       const data = await response.json();
       const { accessToken, refreshToken } = data;
 
       if (accessToken) {
-        // Сохраняем токены в UserContext и делаем запрос за данными пользователя
-        await userLogin(accessToken, refreshToken); // Вызываем userLogin для управления токенами и user
-        navigate('/'); // Перенаправляем на главную страницу
+        await userLogin(accessToken, refreshToken);
+        navigate('/');
       }
     } catch (err) {
       setError((err as Error).message);
