@@ -1,12 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ChangeEvent, useCallback, useState } from 'react';
-import { Box, Button, FormControl, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  Typography,
+} from '@mui/material';
 import styles from './styles.module.scss';
+import { useUserStore } from '../../../../app/store/useUserStore';
 
 export default function LoginForm() {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<string | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { login: userLogin } = useUserStore(); // Из UserContext
   const navigate = useNavigate();
 
   const handleLoginChange = useCallback(
@@ -26,30 +35,44 @@ export default function LoginForm() {
   );
 
   const onSubmit = useCallback(async () => {
-    const response = await fetch('https://server.kenuki.org/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        emailOrUsername: login,
-        password,
-      }),
-    });
+    if (!login || !password) {
+      setError('Login and password are required');
+      return;
+    }
 
-    if (!response.ok) {
-      setError('Username or password is incorrect');
-    } else {
+    setLoading(true);
+    try {
+      // Отправляем запрос на логин
+      const response = await fetch('https://server.kenuki.org/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          emailOrUsername: login,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Username or password is incorrect');
+      }
+
+      // Получаем токены из ответа
       const data = await response.json();
       const { accessToken, refreshToken } = data;
+
       if (accessToken) {
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('user', login);
-        navigate('/');
+        // Сохраняем токены в UserContext и делаем запрос за данными пользователя
+        await userLogin(accessToken, refreshToken); // Вызываем userLogin для управления токенами и user
+        navigate('/'); // Перенаправляем на главную страницу
       }
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
     }
-  }, [login, navigate, password]);
+  }, [login, password, userLogin, navigate]);
 
   const isFormValid = login.trim() !== '' && password.trim() !== '';
 
@@ -87,15 +110,15 @@ export default function LoginForm() {
           onChange={handlePasswordChange}
           style={{ border: error ? '1px solid red' : 'none' }}
         />
-        <Typography sx={{ color: 'red' }}>{error}</Typography>
+        {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
       </label>
       <Box className={styles.signIn}>
         <Button
           className={styles.signInButton}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
           onClick={onSubmit}
         >
-          Sign In
+          {loading ? <CircularProgress size={24} /> : 'Sign In'}{' '}
         </Button>
       </Box>
     </FormControl>

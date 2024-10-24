@@ -1,3 +1,4 @@
+import React, { useState, useContext } from 'react';
 import {
   Avatar,
   Box,
@@ -8,13 +9,10 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-
 import { Link, useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Logo } from '../../shared/ui';
 import { Locale } from '../../features/i18n';
-import { useLogout } from '../../features/logout/Logout';
 import {
   HomeIcon,
   LogoutIcon,
@@ -23,42 +21,12 @@ import {
   ProfileIcon,
   SpacesIcon,
 } from '../../shared/icons';
+import { UserContext } from '../../app/store/useUserStore';
 
 export default function Header() {
   const navigate = useNavigate();
-  const logout = useLogout();
+  const { user, isAuthorized, logout: contextLogout } = useContext(UserContext);
 
-  const settings = [
-    {
-      text: 'Home',
-      action: () => navigate('/'),
-      icon: HomeIcon,
-    },
-    {
-      text: 'Orders',
-      action: () => navigate('/orders'),
-      icon: OrdersIcon,
-    },
-    {
-      text: 'Spaces',
-      action: () => navigate('/spaces'),
-      icon: SpacesIcon,
-    },
-    {
-      text: 'Notifications',
-      action: () => navigate('/notifications'),
-      icon: NotificationsIcon,
-    },
-    {
-      text: 'Profile',
-      action: () => navigate('/profile'),
-      icon: ProfileIcon,
-    },
-    { text: 'Logout', action: logout, icon: LogoutIcon },
-  ];
-
-  const [user, setUser] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>('');
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -69,12 +37,56 @@ export default function Header() {
     setAnchorElUser(null);
   };
 
-  useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setUser(true);
-      setUsername(localStorage.getItem('user') || '');
-    } else setUser(false);
-  }, []);
+  const settings = [
+    {
+      text: 'Home',
+      action: () => {
+        handleCloseUserMenu();
+        navigate('/');
+      },
+      icon: <HomeIcon />,
+    },
+    {
+      text: 'Orders',
+      action: () => {
+        handleCloseUserMenu();
+        navigate('/orders');
+      },
+      icon: <OrdersIcon />,
+    },
+    {
+      text: 'Spaces',
+      action: () => {
+        handleCloseUserMenu();
+        navigate('/spaces');
+      },
+      icon: <SpacesIcon />,
+    },
+    {
+      text: 'Notifications',
+      action: () => {
+        handleCloseUserMenu();
+        navigate('/notifications');
+      },
+      icon: <NotificationsIcon />,
+    },
+    {
+      text: 'Profile',
+      action: () => {
+        handleCloseUserMenu();
+        navigate('/profile');
+      },
+      icon: <ProfileIcon />,
+    },
+    {
+      text: 'Logout',
+      action: () => {
+        handleCloseUserMenu();
+        contextLogout();
+      },
+      icon: <LogoutIcon />,
+    },
+  ];
 
   return (
     <Box component="section">
@@ -88,7 +100,7 @@ export default function Header() {
               <Logo />
             </Box>
             <Box className={styles.auth}>
-              {!user && (
+              {!isAuthorized ? (
                 <>
                   <Link to="/login" className={styles.link}>
                     <Typography className={styles.signIn}>Sign In</Typography>
@@ -97,12 +109,13 @@ export default function Header() {
                     <Typography className={styles.signUp}>Sign Up</Typography>
                   </Link>
                 </>
-              )}
-              {user && (
+              ) : (
                 <Box sx={{ flexGrow: 0 }}>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar sx={{ bgcolor: 'black' }}>N</Avatar>
+                      <Avatar sx={{ bgcolor: 'black' }}>
+                        {user?.firstName?.charAt(0).toUpperCase() || 'U'}
+                      </Avatar>
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -121,23 +134,37 @@ export default function Header() {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    <MenuItem onClick={handleCloseUserMenu}>
-                      {username}
+                    <MenuItem
+                      onClick={handleCloseUserMenu}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderBottom: '1px solid gray',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          color: '#1976d2',
+                          textTransform: 'capitalize',
+                        }}
+                      >
+                        {user?.firstName || 'User'} {user?.lastName || ''}
+                      </Typography>
                     </MenuItem>
                     {settings.map((setting) => (
-                      <MenuItem
-                        key={setting.text}
-                        onClick={handleCloseUserMenu}
-                      >
+                      <MenuItem key={setting.text}>
                         <Button
                           sx={{
                             textAlign: 'center',
                             display: 'flex',
-                            gap: '20px',
+                            gap: '10px',
                           }}
                           onClick={setting.action}
                         >
-                          <img src={setting.icon} alt="icon" /> {setting.text}
+                          {setting.icon} {setting.text}
                         </Button>
                       </MenuItem>
                     ))}

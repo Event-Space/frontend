@@ -31,7 +31,7 @@ export default function Register() {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                gap: '75px',
+                gap: '15vh',
               }}
             >
               <Box

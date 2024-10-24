@@ -22,7 +22,7 @@ export default function Login() {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                gap: '75px',
+                gap: '20vh',
               }}
             >
               <Box
